@@ -1,0 +1,59 @@
+{
+  "name": "TestModdedClothesAddon",
+  "version": "1.0.0",
+  "styleFileList": [
+  ],
+  "scriptFileList_earlyload": [
+  ],
+  "scriptFileList_inject_early": [
+  ],
+  "scriptFileList_preload": [
+  ],
+  "scriptFileList": [
+  ],
+  "tweeFileList": [
+  ],
+  "imgFileList": [
+  ],
+  "imgFileReplaceList": [
+  ],
+  "additionFile": [
+    "aaa/feet.json"
+  ],
+  "addonPlugin": [
+    {
+      "modName": "ModdedClothesAddon",
+      "addonName": "ModdedClothesAddon",
+      "modVersion": "^1.0.0",
+      "params": {
+        "clothes": [
+          {
+            "key": "feet",
+            "filePath": "aaa/feet.json"
+          },
+          {
+            "key": "over_upper",
+            "filePath": "path/to/over_upper.json"
+          }
+        ]
+      }
+    },
+    {
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "addonName": "ImageLoaderAddon",
+      "modVersion": "^2.3.0",
+      "params": [
+      ]
+    }
+  ],
+  "dependenceInfo": [
+    {
+      "modName": "ModdedClothesAddon",
+      "version": "^1.0.0"
+    },
+    {
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "version": "^2.3.0"
+    }
+  ]
+}
