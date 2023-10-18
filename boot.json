@@ -26,8 +26,7 @@
       "modName": "TweeReplacer",
       "addonName": "TweeReplacerAddon",
       "modVersion": "1.0.0",
-      "params": [
-      ]
+      "params": []
     },
     {
       "modName": "ReplacePatcher",
@@ -55,10 +54,14 @@
   "dependenceInfo": [
     {
       "modName": "ModLoader",
-      "version": "^1.6.0"
+      "version": "^1.6.1"
     },
     {
       "modName": "TweeReplacer",
+      "version": "^1.0.0"
+    },
+    {
+      "modName": "ReplacePatcher",
       "version": "^1.0.0"
     },
     {
