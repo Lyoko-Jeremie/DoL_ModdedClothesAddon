@@ -5,6 +5,7 @@ import type {ModZipReader} from "../../../dist-BeforeSC2/ModZipReader";
 import type {SC2DataManager} from "../../../dist-BeforeSC2/SC2DataManager";
 import type {ModUtils} from "../../../dist-BeforeSC2/Utils";
 import JSZip from "jszip";
+import * as JSON5 from "json5";
 import {get, set, has, isString, isArray, every, isNil} from 'lodash';
 import {AddClothesItem, checkParams} from "./ModdedClothesAddonParams";
 import type {ClothesItem} from "./winDef";
@@ -73,7 +74,7 @@ export class ModdedClothesAddon implements LifeTimeCircleHook, AddonPluginHookPo
                 continue;
             }
             try {
-                c.data = JSON.parse(data);
+                c.data = JSON5.parse(data);
                 if (!c.data || !isArray(c.data)) {
                     console.error('[ModdedClothesAddon] registerMod() clothes data invalid', [addonName, mod, pp, c]);
                     this.logger.error(`[ModdedClothesAddon] registerMod() clothes data invalid: addon[${addonName}] file[${c.filePath}]`);

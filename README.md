@@ -12,7 +12,7 @@ the addon version of [suin14/moddedClothes_mod](https://github.com/suin14/modded
     {
       "modName": "ModdedClothesAddon",
       "addonName": "ModdedClothesAddon",
-      "modVersion": "^1.0.0",
+      "modVersion": "^1.1.0",
       "params": {
         "clothes": [
           {
@@ -46,7 +46,7 @@ the addon version of [suin14/moddedClothes_mod](https://github.com/suin14/modded
   "dependenceInfo": [
     {
       "modName": "ModdedClothesAddon",
-      "version": "^1.0.0"
+      "version": "^1.1.0"
     },
     {
       "modName": "ModLoader DoL ImageLoaderHook",
