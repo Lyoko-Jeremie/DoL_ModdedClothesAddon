@@ -1,6 +1,6 @@
 # ModdedClothesAddon
 
-the addon version [suin14/moddedClothes_mod](https://github.com/suin14/moddedClothes_mod)
+the addon version of [suin14/moddedClothes_mod](https://github.com/suin14/moddedClothes_mod)
 
 ---
 
@@ -56,8 +56,8 @@ the addon version [suin14/moddedClothes_mod](https://github.com/suin14/moddedClo
 }
 ```
 
-下面是 `feet.json` 的例子:
-follow is the example of `feet.json`:
+下面是 `feet.json` 的例子:  
+follow is the example of `feet.json`:  
 
 ```json
 [
