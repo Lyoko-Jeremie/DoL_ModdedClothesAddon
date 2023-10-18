@@ -8,6 +8,9 @@ the addon version of [suin14/moddedClothes_mod](https://github.com/suin14/modded
 
 ```json lines
 {
+  "additionFile": [
+    "aaa/feet.json"
+  ],
   "addonPlugin": [
     {
       "modName": "ModdedClothesAddon",
@@ -20,7 +23,9 @@ the addon version of [suin14/moddedClothes_mod](https://github.com/suin14/modded
             // the category of the clothes that want to add, it will add to `setup.clothes.xxx`. For example, if you write `feet` here, it will add to `setup.clothes.feet`
             "key": "feet",
             // 要添加的衣服数组数据所在的文件(zip路径)，JSON5格式
+            // 别忘了在打包时打包这个文件。如果你使用打包器，请添加到 additionFile 列表中
             // the file(zip path) that the array data of the clothes that want to add. JSON5 format
+            // don't forget to pack this file when you pack. If you use packer, please add it to the additionFile list
             "filePath": "path/to/feet.json"
           },
           {
