@@ -19,8 +19,8 @@ the addon version of [suin14/moddedClothes_mod](https://github.com/suin14/modded
             // 要添加的衣服的分类，对应到 `setup.clothes.xxx`。 例如这里写 `feet` 那么就会添加到 `setup.clothes.feet`
             // the category of the clothes that want to add, it will add to `setup.clothes.xxx`. For example, if you write `feet` here, it will add to `setup.clothes.feet`
             "key": "feet",
-            // 要添加的衣服数组数据所在的文件(zip路径)
-            // the file(zip path) that the array data of the clothes that want to add
+            // 要添加的衣服数组数据所在的文件(zip路径)，JSON5格式
+            // the file(zip path) that the array data of the clothes that want to add. JSON5 format
             "filePath": "path/to/feet.json"
           },
           {
@@ -59,7 +59,7 @@ the addon version of [suin14/moddedClothes_mod](https://github.com/suin14/modded
 下面是 `feet.json` 的例子:  
 follow is the example of `feet.json`:  
 
-```json
+```json5
 [
   {
     "index": 4,
