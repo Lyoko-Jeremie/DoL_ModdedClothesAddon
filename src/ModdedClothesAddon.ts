@@ -133,18 +133,35 @@ export class ModdedClothesAddon implements LifeTimeCircleHook, AddonPluginHookPo
         }
         for (const info of this.clothesAddInfo.values()) {
             for (const clothe of info.clothes) {
-                const ck = clothe.key;
-                const c = get(window.DOL.setup.clothes, ck) as ClothesItem[];
-                if (isArray(c)) {
-                    console.log(`window.DOL.setup.clothes.${ck}`, c);
-                    this.changedPaths.add(ck);
-                    for (const d of clothe.data) {
-                        d.index = c.length;
-                        c.push(d);
+                try {
+                    const ck = clothe.key;
+                    let c = get(window.DOL.setup.clothes, ck) as ClothesItem[] | undefined;
+                    if (isArray(c) || isNil(c)) {
+                        if (!isArray(c)) {
+                            console.warn(`[ModdedClothesAddon] window.setup.clothes.${ck} not found. mod[${info.modName}]. will add it.`, [c]);
+                            this.logger.warn(`[ModdedClothesAddon] window.setup.clothes.${ck} not found. mod[${info.modName}]. will add it.`);
+                            set(window.DOL.setup.clothes, ck, []);
+                            c = get(window.DOL.setup.clothes, ck) as ClothesItem[] | undefined;
+                            if (!isArray(c)) {
+                                // never go there
+                                console.error(`[ModdedClothesAddon] window.setup.clothes.${ck} invalid. never go there`, [c]);
+                                this.logger.error(`[ModdedClothesAddon] window.setup.clothes.${ck} invalid. never go there`);
+                                continue;
+                            }
+                        }
+                        console.log(`window.DOL.setup.clothes.${ck}`, c);
+                        this.changedPaths.add(ck);
+                        for (const d of clothe.data) {
+                            d.index = c.length;
+                            c.push(d);
+                        }
+                    } else {
+                        console.error(`[ModdedClothesAddon] window.setup.clothes.${ck} invalid. mod[${info.modName}]`, [c]);
+                        this.logger.error(`[ModdedClothesAddon] window.setup.clothes.${ck} invalid. mod[${info.modName}]`);
                     }
-                } else {
-                    console.error(`[ModdedClothesAddon] window.setup.clothes.${ck} not found. mod[${info.modName}]`, [c]);
-                    this.logger.error(`[ModdedClothesAddon] window.setup.clothes.${ck} not found. mod[${info.modName}]`);
+                } catch (e: Error | any) {
+                    console.error(`[ModdedClothesAddon] patch mod[${info.modName}] failed.`, [e]);
+                    this.logger.error(`[ModdedClothesAddon] patch mod[${info.modName}] failed. error[${e?.message ? e.message : e}]`);
                 }
             }
             this.logger.log(`[ModdedClothesAddon] patch mod[${info.modName}] ok.`);
