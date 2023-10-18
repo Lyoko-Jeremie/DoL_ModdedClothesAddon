@@ -1,5 +1,7 @@
 # ModdedClothesAddon
 
+the addon version [suin14/moddedClothes_mod](https://github.com/suin14/moddedClothes_mod)
+
 ---
 
 `ModdedClothesAddon` : `ModdedClothesAddon`
