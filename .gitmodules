@@ -1,0 +1,4 @@
+[submodule "src/GM_config_TS"]
+	path = src/GM_config_TS
+	url = ../GM_config_TS.git
+	branch = master
