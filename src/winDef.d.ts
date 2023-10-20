@@ -92,7 +92,7 @@ declare interface ClothesItem {
     location: number;
     iconFile: string;
     accIcon: number;
-    outfitPrimary: object;
+    outfitPrimary: { [key: string]: string };
     outfitSecondary: string[];
     notuck: number;
     /**
@@ -101,6 +101,8 @@ declare interface ClothesItem {
      */
     mask_img?: number;
     // TODO list and document other options
+
+    modder: string;
 }
 
 declare namespace setup {

@@ -6,7 +6,7 @@ import type {SC2DataManager} from "../../../dist-BeforeSC2/SC2DataManager";
 import type {ModUtils} from "../../../dist-BeforeSC2/Utils";
 import JSZip from "jszip";
 import * as JSON5 from "json5";
-import {get, set, has, isString, isArray, every, isNil} from 'lodash';
+import {get, set, has, isString, isArray, every, isNil, isSafeInteger} from 'lodash';
 import {AddClothesItem, checkParams} from "./ModdedClothesAddonParams";
 import type {ClothesItem} from "./winDef";
 
@@ -171,6 +171,101 @@ export class ModdedClothesAddon implements LifeTimeCircleHook, AddonPluginHookPo
             }
             this.logger.log(`[ModdedClothesAddon] patch mod[${info.modName}] ok.`);
         }
+        try {
+            checkForOutfitWarmth(this.logger);
+        } catch (e) {
+            console.error('[ModdedClothesAddon] checkForOutfitWarmth() error.', [e]);
+        }
     }
 
 }
+
+/**
+ * do the check for `window.getTrueWarmth()`
+ */
+export function checkForOutfitWarmth(logger: LogWrapper) {
+    for (const key of Object.keys(window.DOL.setup.clothes)) {
+        const ccc: ClothesItem[] = window.DOL.setup.clothes[key];
+        if (!isArray(ccc)) {
+            console.error('[ModdedClothesAddon] checkForOutfitWarmth() invalid window.DOL.setup.clothes', [key, ccc]);
+            logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() invalid window.DOL.setup.clothes [${key}]`);
+            continue;
+        }
+        for (const c of ccc) {
+            if (!c) {
+                console.error('[ModdedClothesAddon] checkForOutfitWarmth() invalid window.DOL.setup.clothes', [key, ccc, c]);
+                logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() invalid window.DOL.setup.clothes [${key}]`);
+                continue;
+            }
+            if (c.outfitPrimary) {
+                for (const k of Object.keys(c.outfitPrimary)) {
+                    if (c.outfitPrimary[k] === "broken" || c.outfitPrimary[k] === "split") {
+                        continue;
+                    }
+                    if (!window.DOL.setup.clothes[k]) {
+                        console.error('[ModdedClothesAddon] checkForOutfitWarmth() cannot find clothes type window.DOL.setup.clothes', [key, ccc, c, k]);
+                        logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() cannot find clothes type window.DOL.setup.clothes type[${key}] cloths[${c.name}] need type[${k}]`);
+                        continue;
+                    }
+                    const item = window.DOL.setup.clothes[k].find((z: ClothesItem) => z.name === c.outfitPrimary[k] && z.modder === c.modder);
+                    if (!item) {
+                        console.error('[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitPrimary', [key, ccc, c, k, c.outfitPrimary[k]]);
+                        logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitPrimary [${key}] cloths[${c.name}] need type[${k}] cloths[${c.outfitPrimary[k]}]`);
+                        continue;
+                    }
+                }
+            }
+            if (c.outfitSecondary) {
+                if (c.outfitSecondary.length % 2 !== 0) {
+                    console.error('[ModdedClothesAddon] checkForOutfitWarmth() bad outfitSecondary', [key, ccc, c, c.outfitSecondary]);
+                    logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() bad outfitSecondary [${key}] cloths[${c.name}], [${c.outfitSecondary.join(', ')}]`);
+                    continue;
+                }
+                c.outfitSecondary.forEach((k, i) => {
+                    if (i % 2 === 0 && c.outfitSecondary[i + 1] !== "broken" && c.outfitSecondary[i + 1] !== "split") {
+                        if (!window.DOL.setup.clothes[k]) {
+                            console.error('[ModdedClothesAddon] checkForOutfitWarmth() cannot find clothes type window.DOL.setup.clothes', [key, ccc, c, k]);
+                            logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() cannot find clothes type window.DOL.setup.clothes type[${key}] cloths[${c.name}] need type[${k}]`);
+                            return;
+                        }
+                        const item = window.DOL.setup.clothes[k].find((z: ClothesItem) => z.name === item.outfitSecondary[i + 1] && z.modder === c.modder);
+                        if (!item) {
+                            console.error('[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitSecondary', [key, ccc, c, k, item.outfitSecondary[i + 1], c.modder]);
+                            logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitSecondary [${key}] cloths[${c.name}] need type[${k}] cloths[${item.outfitSecondary[i + 1]}] modder[${c.modder}]`);
+                            return;
+                        }
+                    }
+                });
+            }
+        }
+    }
+}
+
+// for outfits it adds the lower piece's warmth too
+function getTrueWarmth(item: ClothesItem, setup = window.DOL.setup) {
+    let warmth = item.warmth || 0;
+
+    if (item.outfitPrimary) {
+        // sum of warmth of every secondary piece
+        // outfitPrimary looks like this {'lower': 'item_name', 'head': 'item_name'}
+        warmth += Object.keys(item.outfitPrimary) // loop through secondary items list
+            .filter(x => item.outfitPrimary[x] !== "broken" && item.outfitPrimary[x] !== "split") // filter out broken pieces
+            .map(x => setup.clothes[x].find((z: ClothesItem) => z.name === item.outfitPrimary[x] && z.modder === item.modder)) // find items in setup.clothes
+            .reduce((sum, x) => sum + (x.warmth || 0), 0); // calculate sum of their warmth field
+    }
+
+    if (item.outfitSecondary) {
+        if (item.outfitSecondary.length % 2 !== 0) console.log("WARNING: " + item.name + " has bad .outfitSecondary data!");
+
+        // outfitSecondary looks like this ['upper', 'item_name', 'head', 'item_name']
+        item.outfitSecondary.forEach((x, i) => {
+            if (i % 2 === 0 && item.outfitSecondary[i + 1] !== "broken" && item.outfitSecondary[i + 1] !== "split") {
+                warmth += setup.clothes[x].find((z: ClothesItem) => z.name === item.outfitSecondary[i + 1] && z.modder === item.modder).warmth || 0;
+            }
+        });
+    }
+
+    return warmth;
+}
+
+// window.getTrueWarmth = getTrueWarmth;
