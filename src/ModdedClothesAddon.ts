@@ -176,6 +176,8 @@ export class ModdedClothesAddon implements LifeTimeCircleHook, AddonPluginHookPo
         } catch (e) {
             console.error('[ModdedClothesAddon] checkForOutfitWarmth() error.', [e]);
         }
+        console.log('[ModdedClothesAddon] init() ok.');
+        this.logger.log(`[ModdedClothesAddon] init() ok.`);
     }
 
 }
