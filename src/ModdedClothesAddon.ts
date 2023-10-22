@@ -173,8 +173,9 @@ export class ModdedClothesAddon implements LifeTimeCircleHook, AddonPluginHookPo
         }
         try {
             checkForOutfitWarmth(this.logger);
-        } catch (e) {
-            console.error('[ModdedClothesAddon] checkForOutfitWarmth() error.', [e]);
+        } catch (e: Error | any) {
+            console.error('[ModdedClothesAddon] checkForOutfitWarmth() error.', e);
+            this.logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() error. error[${e?.message ? e.message : e}]`);
         }
         console.log('[ModdedClothesAddon] init() end.');
         this.logger.log(`[ModdedClothesAddon] init() end.`);
@@ -209,7 +210,7 @@ export function checkForOutfitWarmth(logger: LogWrapper) {
                         logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() cannot find clothes type window.DOL.setup.clothes type[${key}] cloths[${c.name}] need type[${k}]`);
                         continue;
                     }
-                    const item = window.DOL.setup.clothes[k].find((z: ClothesItem) => z.name === c.outfitPrimary[k] && z.modder === c.modder);
+                    const item = window.DOL.setup.clothes[k]?.find((z: ClothesItem) => z.name === c.outfitPrimary[k] && z.modder === c.modder);
                     if (!item) {
                         console.error('[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitPrimary', [key, ccc, c, k, c.outfitPrimary[k]]);
                         logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitPrimary [${key}] cloths[${c.name}] need type[${k}] cloths[${c.outfitPrimary[k]}]`);
@@ -230,10 +231,10 @@ export function checkForOutfitWarmth(logger: LogWrapper) {
                             logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() cannot find clothes type window.DOL.setup.clothes type[${key}] cloths[${c.name}] need type[${k}]`);
                             return;
                         }
-                        const item = window.DOL.setup.clothes[k].find((z: ClothesItem) => z.name === item.outfitSecondary[i + 1] && z.modder === c.modder);
+                        const item = window.DOL.setup.clothes[k].find((z: ClothesItem) => z.name === c.outfitSecondary[i + 1] && z.modder === c.modder);
                         if (!item) {
-                            console.error('[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitSecondary', [key, ccc, c, k, item.outfitSecondary[i + 1], c.modder]);
-                            logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitSecondary [${key}] cloths[${c.name}] need type[${k}] cloths[${item.outfitSecondary[i + 1]}] modder[${c.modder}]`);
+                            console.error('[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitSecondary', [key, ccc, c, k, c.outfitSecondary[i + 1], c.modder]);
+                            logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitSecondary [${key}] cloths[${c.name}] need type[${k}] cloths[${c.outfitSecondary[i + 1]}] modder[${c.modder}]`);
                             return;
                         }
                     }
