@@ -67,6 +67,11 @@ the addon version of [suin14/moddedClothes_mod](https://github.com/suin14/modded
 下面是 `feet.json` 的例子:  
 follow is the example of `feet.json`:  
 
+NOTE:  
+`index` 字段会在注入时重新根据游戏数据计算并覆盖填充，所以可以随便填写。  
+the `index` field will be recalculated and overwritten according to the game data when injected, so you can fill in it as your like.  
+
+
 ```json5
 [
   {
