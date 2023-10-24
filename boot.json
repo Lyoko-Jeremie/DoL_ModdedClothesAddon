@@ -1,6 +1,6 @@
 {
   "name": "ModdedClothesAddon",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "styleFileList": [
   ],
   "scriptFileList_earlyload": [
@@ -54,7 +54,7 @@
   "dependenceInfo": [
     {
       "modName": "ModLoader",
-      "version": "^1.6.1"
+      "version": "^1.6.1 || ^2.0.0"
     },
     {
       "modName": "TweeReplacer",
