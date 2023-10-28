@@ -10,7 +10,7 @@
     "build:ts": "tsc -p ./src_boot/tsconfig.json",
     "build:webpack": "webpack -c ./webpack.config.js"
   },
-  "packageManager": "yarn@3.4.1",
+  "packageManager": "yarn@4.0.0",
   "dependencies": {
     "json5": "^2.2.3",
     "jszip": "^3.10.1",
