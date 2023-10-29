@@ -1,6 +1,6 @@
 {
   "name": "ModdedClothesAddon",
-  "version": "1.3.3",
+  "version": "1.3.6",
   "styleFileList": [
   ],
   "scriptFileList_earlyload": [
@@ -37,8 +37,8 @@
           {
             "TODO": "canvasmodel-00-data.js",
             "fileName": "canvasmodel-00-data.js",
-            "from": "over_upper_arm",
-            "to": "over_upper_arms"
+            "from": "over_upper_arm:",
+            "to": "over_upper_arms:"
           }
         ]
       }
