@@ -183,6 +183,25 @@ export class ModdedClothesAddon implements LifeTimeCircleHook, AddonPluginHookPo
 
 }
 
+export function searchClothesByName(name: string) {
+    const r: { c: ClothesItem, t: string }[] = [];
+    for (const key of Object.keys(window.DOL.setup.clothes)) {
+        const ccc: ClothesItem[] = window.DOL.setup.clothes[key];
+        if (!isArray(ccc)) {
+            continue;
+        }
+        for (const c of ccc) {
+            if (c.name === name) {
+                r.push({
+                    c: c,
+                    t: key,
+                });
+            }
+        }
+    }
+    return r;
+}
+
 /**
  * do the check for `window.getTrueWarmth()`
  */
@@ -214,6 +233,14 @@ export function checkForOutfitWarmth(logger: LogWrapper) {
                     if (!item) {
                         console.error('[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitPrimary', [key, ccc, c, k, c.outfitPrimary[k]]);
                         logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitPrimary [${key}] cloths[${c.name}] need type[${k}] cloths[${c.outfitPrimary[k]}]`);
+                        const r = searchClothesByName(c.outfitPrimary[k]);
+                        if (r.length > 0) {
+                            console.warn('[ModdedClothesAddon] checkForOutfitWarmth() some cloths[${c.name}] find from other type. maybe the type is wrong ? ', [r]);
+                            logger.warn(`[ModdedClothesAddon] checkForOutfitWarmth() some cloths[${c.name}] find from other type [${r.map(T => T.t).join(',')}] . maybe the type is wrong ? `);
+                        } else {
+                            console.warn('[ModdedClothesAddon] checkForOutfitWarmth() never find a cloth have this name, maybe you forgot add it or write a wrong name ?');
+                            logger.warn(`[ModdedClothesAddon] checkForOutfitWarmth() never find a cloth have this name, maybe you forgot add it or write a wrong name ?`);
+                        }
                         continue;
                     }
                 }
@@ -235,6 +262,14 @@ export function checkForOutfitWarmth(logger: LogWrapper) {
                         if (!item) {
                             console.error('[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitSecondary', [key, ccc, c, k, c.outfitSecondary[i + 1], c.modder]);
                             logger.error(`[ModdedClothesAddon] checkForOutfitWarmth() cannot find cloths outfitSecondary [${key}] cloths[${c.name}] need type[${k}] cloths[${c.outfitSecondary[i + 1]}] modder[${c.modder}]`);
+                            const r = searchClothesByName(c.outfitPrimary[k]);
+                            if (r.length > 0) {
+                                console.warn('[ModdedClothesAddon] checkForOutfitWarmth() some cloths[${c.name}] find from other type. maybe the type is wrong ? ', [r]);
+                                logger.warn(`[ModdedClothesAddon] checkForOutfitWarmth() some cloths[${c.name}] find from other type [${r.map(T => T.t).join(',')}] . maybe the type is wrong ? `);
+                            } else {
+                                console.warn('[ModdedClothesAddon] checkForOutfitWarmth() never find a cloth have this name, maybe you forgot add it or write a wrong name ?');
+                                logger.warn(`[ModdedClothesAddon] checkForOutfitWarmth() never find a cloth have this name, maybe you forgot add it or write a wrong name ?`);
+                            }
                             return;
                         }
                     }
