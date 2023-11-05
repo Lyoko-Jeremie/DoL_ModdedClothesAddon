@@ -105,3 +105,16 @@ the `index` field will be recalculated and overwritten according to the game dat
   }
 ]
 ```
+
+---
+
+### 请特别注意有关套装的温暖度计算问题
+
+在服装的 `outfitPrimary: { [key: string]: string };` 和 `outfitSecondary: string[];` 两个可选项中的是用来计算套装温暖度的项。  
+如果某件衣服是套装的一部分，可以在`outfitPrimary`中填写套装另一部分的类型和衣服名称，这样游戏在计算时就会把这两件衣服的温暖度合并计算。  
+但同时，由于游戏的温暖度计算算法存在一点小问题，如果`outfitPrimary`或`outfitSecondary`中有不存在或者错误的项，那么就会导致游戏计算温暖度时报红色错误，提示`Cannot read properties of undefined (reading 'warmth')`。
+
+本mod已经编写了额外的附加检查逻辑来在游戏加载时检查`outfitPrimary`和`outfitSecondary`中的项是否有对应衣服存在，如果不存在则会在ModLoader日志中报红色错误，以便提示开发者这里存在的问题。
+
+
+
