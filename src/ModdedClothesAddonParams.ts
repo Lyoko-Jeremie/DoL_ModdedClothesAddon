@@ -1,4 +1,4 @@
-import {get, set, has, isString, isArray, every, isNil} from 'lodash';
+import {get, set, has, isString, isArray, every, isNil, isPlainObject} from 'lodash';
 import type {ClothesItem} from "./winDef";
 
 export interface AddClothesItem {
@@ -9,6 +9,24 @@ export interface AddClothesItem {
 
 export interface ModdedClothesAddonParams {
     clothes: AddClothesItem[];
+    patch?: string[];
+}
+
+export type ClothesPatchUpdateType = {
+    /**
+     * must be a PlainObject
+     * key: a subset of `ClothesItem` , must have `name` field
+     * value:
+     *      `null` means delete,
+     *      other value but not undefined means update,
+     *      if not provide or `undefined` means no change.
+     */
+    [key in keyof (Partial<ClothesItem> & Pick<ClothesItem, 'name'>)]: (ClothesItem)[key] | null
+};
+
+export interface ClothesPatchInfo {
+    key: string;
+    data: ClothesPatchUpdateType[];
 }
 
 export function checkAddClothesItem(a: any): a is AddClothesItem {
@@ -18,6 +36,16 @@ export function checkAddClothesItem(a: any): a is AddClothesItem {
         && typeof a.filePath === 'string';
 }
 
+export function checkClothesPatchInfo(a: any): a is ClothesPatchInfo {
+    return a
+        && isString(a.key)
+        && isArray(a.data)
+        && every(a.data, isPlainObject);
+}
+
 export function checkParams(a: any): a is ModdedClothesAddonParams {
-    return a && a.clothes && isArray(a.clothes) && every(a.clothes, checkAddClothesItem);
+    return a
+        && a.clothes && isArray(a.clothes) && every(a.clothes, checkAddClothesItem)
+        && a.patch && isArray(a.patch) && every(a.patch, isString)
+        ;
 }

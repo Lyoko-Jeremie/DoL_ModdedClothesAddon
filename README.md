@@ -36,6 +36,12 @@ the addon version of [suin14/moddedClothes_mod](https://github.com/suin14/modded
             "key": "over_lower",
             "filePath": "path/to/over_lower.json"
           }
+        ],
+        "patch": [
+          // 对现有衣服（游戏原本衣服或者此mod之前的mod添加的衣服）打补丁，可以修改或删除衣服的属性
+          "path/to/patch_file1.json",
+          "path/to/patch_file2.json",
+          "path/to/patch_file3.json"
         ]
       }
     },
@@ -105,6 +111,40 @@ the `index` field will be recalculated and overwritten according to the game dat
   }
 ]
 ```
+
+下面是 `patch_file.json` 的例子：
+follow is the example of `patch_file.json`:
+
+```json lines
+[
+  // 同一个文件可以修改多个分类的衣服
+  // a file can modify clothes of multiple categories
+  {
+    // 衣服所在的分类，对应到 `setup.clothes.xxx`。 例如这里写 `feet` 那么就会修改 `setup.clothes.feet` 下的内容
+    // the category of the clothes that want to modify, it will modify the content under `setup.clothes.xxx`. For example, if you write `feet` here, it will modify the content under `setup.clothes.feet`
+    "key": "feet",
+    "data": [
+      {
+        // 必填：衣服的 `name` 字段，用来定位要修改的衣服
+        // required: the `name` field of the clothes, used to locate the clothes to be modified
+        "name": "ansandals",
+        // 可选: 如果存在一个字段，则会覆盖
+        // optional: if a field exists, it will be overwritten
+        "cost": 1,
+        // 可选: 如果不存在一个字段，则会添加
+        // optional: if a field does not exist, it will be added
+        "meow": true,
+        // 可选: 如果填写为 null，则会删除
+        // optional: if fill in as null, it will be deleted
+        "mask_img": null
+        // 除`name`以外其他所有字段都是可选的，可以不出现，不出现的字段不会修改
+        // all fields except `name` are optional, they can be omitted, and the fields that are not omitted will not be modified
+      }
+    ]
+  }
+]
+```
+
 
 ---
 

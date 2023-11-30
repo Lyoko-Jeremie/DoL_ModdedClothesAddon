@@ -6,8 +6,14 @@ import type {SC2DataManager} from "../../../dist-BeforeSC2/SC2DataManager";
 import type {ModUtils} from "../../../dist-BeforeSC2/Utils";
 import JSZip from "jszip";
 import * as JSON5 from "json5";
-import {get, set, has, isString, isArray, every, isNil, isSafeInteger} from 'lodash';
-import {AddClothesItem, checkParams} from "./ModdedClothesAddonParams";
+import {get, set, has, isString, isArray, every, isNil, isSafeInteger, isNull, isUndefined} from 'lodash';
+import {
+    AddClothesItem,
+    checkClothesPatchInfo,
+    checkParams,
+    ClothesPatchInfo,
+    ClothesPatchUpdateType
+} from "./ModdedClothesAddonParams";
 import type {ClothesItem} from "./winDef";
 
 export interface ClothesInfo {
@@ -18,6 +24,7 @@ export interface ClothesInfo {
 export interface ClothesAddInfo {
     modName: string;
     clothes: ClothesInfo[];
+    patch: ClothesPatchInfo[];
 }
 
 export class ModdedClothesAddon implements LifeTimeCircleHook, AddonPluginHookPointEx {
@@ -91,15 +98,43 @@ export class ModdedClothesAddon implements LifeTimeCircleHook, AddonPluginHookPo
                 continue;
             }
         }
+        const patchList: ClothesPatchInfo[] = [];
+        for (const c of pp.patch || []) {
+            const data = await modZip.zip.file(c)?.async('string');
+            if (isNil(data)) {
+                console.error('[ModdedClothesAddon] registerMod() patch data file not found', [addonName, mod, pp, c]);
+                this.logger.error(`[ModdedClothesAddon] registerMod() patch data file not found: addon[${addonName}] file[${c}]`);
+                continue;
+            }
+            if (!data) {
+                console.error('[ModdedClothesAddon] registerMod() patch data file empty', [addonName, mod, pp, c]);
+                this.logger.error(`[ModdedClothesAddon] registerMod() patch data file empty: addon[${addonName}] file[${c}]`);
+                continue;
+            }
+            try {
+                const d = JSON5.parse(data);
+                if (!d || !isArray(d) || !every(d, checkClothesPatchInfo)) {
+                    console.error('[ModdedClothesAddon] registerMod() patch data invalid', [addonName, mod, pp, c, d]);
+                    this.logger.error(`[ModdedClothesAddon] registerMod() patch data invalid: addon[${addonName}] file[${c}]`);
+                    continue;
+                }
+                patchList.push(...d);
+            } catch (e) {
+                console.error('[ModdedClothesAddon] registerMod() patch data invalid', [addonName, mod, pp, c]);
+                this.logger.error(`[ModdedClothesAddon] registerMod() patch data invalid: addon[${addonName}] file[${c}]`);
+                continue;
+            }
+        }
         const cc = pp.clothes.map((T: AddClothesItem) => {
             return {
                 key: T.key,
                 data: T.data,
             };
-        }).filter((T): T is ClothesInfo => isArray(T.data))
+        }).filter((T): T is ClothesInfo => isArray(T.data));
         this.addClothes({
             modName: mod.name,
             clothes: cc,
+            patch: patchList,
         });
     }
 
@@ -163,6 +198,41 @@ export class ModdedClothesAddon implements LifeTimeCircleHook, AddonPluginHookPo
                     } else {
                         console.error(`[ModdedClothesAddon] window.setup.clothes.${ck} invalid. mod[${info.modName}]`, [c]);
                         this.logger.error(`[ModdedClothesAddon] window.setup.clothes.${ck} invalid. mod[${info.modName}]`);
+                    }
+                } catch (e: Error | any) {
+                    console.error(`[ModdedClothesAddon] patch mod[${info.modName}] failed.`, [e]);
+                    this.logger.error(`[ModdedClothesAddon] patch mod[${info.modName}] failed. error[${e?.message ? e.message : e}]`);
+                }
+            }
+            for (const clothe of info.patch) {
+                try {
+                    const ck = clothe.key;
+                    let c = get(window.DOL.setup.clothes, ck) as ClothesItem[] | undefined;
+                    if (isArray(c) || isNil(c)) {
+                        c = get(window.DOL.setup.clothes, ck) as ClothesItem[];
+                        for (const cu of clothe.data) {
+                            const cc = c.find((T: ClothesItem) => T.name === cu.name) as ClothesItem | undefined;
+                            if (!cc) {
+                                console.error(`[ModdedClothesAddon] window.setup.clothes.${ck} cannot find clothes[${cu.name}]. mod[${info.modName}]`, [clothe]);
+                                this.logger.error(`[ModdedClothesAddon] window.setup.clothes.${ck} cannot find clothes[${cu.name}]. mod[${info.modName}]`);
+                            } else {
+                                for (const k of Object.keys(cu) as (keyof ClothesPatchUpdateType)[]) {
+                                    if (k === 'name') {
+                                        continue;
+                                    }
+                                    if (isNull(cu[k])) {
+                                        delete cc[k];
+                                    } else if (isUndefined(cu[k])) {
+                                        continue;
+                                    } else {
+                                        (cc[k] as any) = cu[k] as any;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        console.error(`[ModdedClothesAddon] window.setup.clothes.${ck} not found. mod[${info.modName}] cannot patch it.`, [c]);
+                        this.logger.error(`[ModdedClothesAddon] window.setup.clothes.${ck} not found. mod[${info.modName}] cannot patch it.`);
                     }
                 } catch (e: Error | any) {
                     console.error(`[ModdedClothesAddon] patch mod[${info.modName}] failed.`, [e]);
