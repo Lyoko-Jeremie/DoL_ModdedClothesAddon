@@ -45,7 +45,7 @@ export function checkClothesPatchInfo(a: any): a is ClothesPatchInfo {
 
 export function checkParams(a: any): a is ModdedClothesAddonParams {
     return a
-        && a.clothes && isArray(a.clothes) && every(a.clothes, checkAddClothesItem)
-        && a.patch && isArray(a.patch) && every(a.patch, isString)
+        && (a.clothes ? isArray(a.clothes) && every(a.clothes, checkAddClothesItem) : true)
+        && (a.patch ? isArray(a.patch) && every(a.patch, isString) : true)
         ;
 }

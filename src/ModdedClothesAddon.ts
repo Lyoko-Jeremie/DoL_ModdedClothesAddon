@@ -73,7 +73,7 @@ export class ModdedClothesAddon implements LifeTimeCircleHook, AddonPluginHookPo
             this.logger.error(`[ModdedClothesAddon] registerMod() ParamsInvalid: addon[${addonName}]`);
             return;
         }
-        for (const c of pp.clothes) {
+        for (const c of pp.clothes || []) {
             const data = await modZip.zip.file(c.filePath)?.async('string');
             if (isNil(data)) {
                 console.error('[ModdedClothesAddon] registerMod() clothes data file not found', [addonName, mod, pp, c]);
@@ -125,7 +125,7 @@ export class ModdedClothesAddon implements LifeTimeCircleHook, AddonPluginHookPo
                 continue;
             }
         }
-        const cc = pp.clothes.map((T: AddClothesItem) => {
+        const cc = (pp.clothes || []).map((T: AddClothesItem) => {
             return {
                 key: T.key,
                 data: T.data,
