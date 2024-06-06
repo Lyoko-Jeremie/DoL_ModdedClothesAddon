@@ -1,6 +1,6 @@
 {
   "name": "ModdedClothesAddon",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "styleFileList": [
   ],
   "scriptFileList_earlyload": [
@@ -27,21 +27,6 @@
       "addonName": "TweeReplacerAddon",
       "modVersion": "1.0.0",
       "params": []
-    },
-    {
-      "modName": "ReplacePatcher",
-      "addonName": "ReplacePatcherAddon",
-      "modVersion": "1.0.0",
-      "params": {
-        "js": [
-          {
-            "TODO": "canvasmodel-00-data.js",
-            "fileName": "canvasmodel-00-data.js",
-            "from": "over_upper_arm:",
-            "to": "over_upper_arms:"
-          }
-        ]
-      }
     },
     {
       "modName": "ModLoader DoL ImageLoaderHook",
