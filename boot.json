@@ -1,6 +1,6 @@
 {
   "name": "ModdedClothesAddon",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "styleFileList": [
   ],
   "scriptFileList_earlyload": [
@@ -29,11 +29,12 @@
       "params": []
     },
     {
-      "modName": "ModLoader DoL ImageLoaderHook",
-      "addonName": "ImageLoaderAddon",
-      "modVersion": "^2.3.0",
-      "params": [
-      ]
+      "modName": "ImageLoaderHook2BeautySelectorAddon",
+      "addonName": "ImageLoaderHook2BeautySelectorAddon",
+      "modVersion": "^1.0.0",
+      "params": {
+        "dontCovertMe": true
+      }
     }
   ],
   "dependenceInfo": [
