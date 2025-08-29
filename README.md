@@ -85,6 +85,9 @@ the `index` field will be recalculated and overwritten according to the game dat
     "name": "ansandals",
     "name_cap": "ansandals", "cn_name_cap": "更好的凉鞋",
     "variable": "ansandals",
+    "combat": {
+      "reference": "naked"
+    },
     "integrity": 100,
     "integrity_max": 100,
     "fabric_strength": 20,
@@ -111,6 +114,8 @@ the `index` field will be recalculated and overwritten according to the game dat
   }
 ]
 ```
+
+注：要让某个饰品在战斗中不显示，需要配置上面所述的 `combat` 选项的内容，否则默认会显示出来，需要补全对应的图片素材。
 
 下面是 `patch_file.json` 的例子：
 follow is the example of `patch_file.json`:
